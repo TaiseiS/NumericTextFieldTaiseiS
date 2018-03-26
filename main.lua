@@ -117,12 +117,13 @@ local function UpdateTime ()
 		lives = lives - 1
 
 		if (lives == 2) then
-			life3.isVisible = false
+			life1.isVisible = false
 		elseif (lives == 1) then
 			life2.isVisible = false
 		elseif (lives == 0) then
-			life1.isVisible = false
+			life3.isVisible = false
 		end
+		AskQuestions()
 	end
 end
 
@@ -167,8 +168,13 @@ life3 = display.newImageRect("Images/soul.png", 150, 150)
 life3.x = display.contentWidth*7/8
 life3.y = display.contentHeight*1/7
 
+clockText = display.newText(".", display.contentWidth*1/5, display.contentHeight*1/8, nil, 50)
+clockText:setTextColor(1, 1, 0)
+
 
 --Function Calls
 
 --call the function Ask Question
 AskQuestions()
+UpdateTime()
+StartTimer()
