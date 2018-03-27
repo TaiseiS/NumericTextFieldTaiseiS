@@ -73,11 +73,49 @@ local function AskQuestions()
 
 end
 
+local function UpdateHeart()
+	print ("Lives =", lives)
+	if (lives == 2) then
+		life1.isVisible = false
+		life2.isVisible = true
+		life3.isVisible = true
+	elseif (lives == 1) then
+		life1.isVisible = false
+		life2.isVisible = false
+		life3.isVisible = true
+	elseif (lives == 0) then
+		life1.isVisible = false
+		life2.isVisible = false
+		life3.isVisible = false			
+	end
+end
+
 local function HideCorrect()
 	correctObj.isVisible = false
 	incorrectObj.isVisible = false
 	AskQuestions()
-	print (correctObj.isVisible)
+end
+
+local function UpdateTime ()
+	secondsLeft = secondsLeft - 1
+	clockText.text = secondsLeft .. ""
+
+	if (secondsLeft == 0) then
+		secondsLeft = totalSeconds
+		lives = lives - 1
+		UpdateHeart()
+		AskQuestions()
+
+	end
+end
+
+--calls the timer
+local function StartTimer()
+	countdownTimer = timer.performWithDelay (1000, UpdateTime, 0)	
+end
+
+local function ResetTimer()
+	secondsLeft = totalSeconds
 end
 
 local function NumericFieldListener( event )
@@ -97,40 +135,19 @@ local function NumericFieldListener( event )
 		--user answer is correct
 		if (userAnswer == correctAnswer) then
 			correctObj.isVisible = true
+			ResetTimer()
 			timer.performWithDelay(2000, HideCorrect)
-			print (correctObj.isVisible)
 		else
 			incorrectObj.isVisible = true
-			timer.performWithDelay(2000, HideCorrect)
-			print (incorrectObj.isVisible)			
+			lives = lives - 1
+			UpdateHeart()
+			ResetTimer()
+			timer.performWithDelay(2000, HideCorrect)		
 
 		end
 	end
 end
 
-local function UpdateTime ()
-	secondsLeft = secondsLeft - 1
-	clockText.text = secondsLeft .. ""
-
-	if (secondsLeft == 0) then
-		secondsLeft = totalSeconds
-		lives = lives - 1
-
-		if (lives == 2) then
-			life1.isVisible = false
-		elseif (lives == 1) then
-			life2.isVisible = false
-		elseif (lives == 0) then
-			life3.isVisible = false
-		end
-		AskQuestions()
-	end
-end
-
---calls the timer
-local function StartTimer()
-	countdownTimer = timer.performWithDelay (1000, UpdateTime, 0)	
-end
 
 --objects
 
@@ -168,7 +185,7 @@ life3 = display.newImageRect("Images/soul.png", 150, 150)
 life3.x = display.contentWidth*7/8
 life3.y = display.contentHeight*1/7
 
-clockText = display.newText(".", display.contentWidth*1/5, display.contentHeight*1/8, nil, 50)
+clockText = display.newText("", display.contentWidth*1/5, display.contentHeight*1/8, nil, 50)
 clockText:setTextColor(1, 1, 0)
 
 
@@ -178,3 +195,4 @@ clockText:setTextColor(1, 1, 0)
 AskQuestions()
 UpdateTime()
 StartTimer()
+UpdateHeart()
